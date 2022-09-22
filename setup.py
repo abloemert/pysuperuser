@@ -10,6 +10,6 @@ setup(
         "pywin32;os_name=='nt'",
     ],
     entry_points={
-        'console_scripts': ['python-as-superuser=pysuperuser.run_python:main']
+        'console_scripts': ['python-as-superuser=pysuperuser.runner:main']
     },
 )

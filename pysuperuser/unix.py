@@ -15,7 +15,7 @@ def run_as_root(cmd: list):
         else:
             su_path = shutil.which('su')
             if su_path:
-                sub_cmd = shlex.join(cmd)
+                sub_cmd = ' '.join(shlex.quote(arg) for arg in cmd)
                 cmd = [
                     su_path,
                     '-c',

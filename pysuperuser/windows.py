@@ -20,7 +20,7 @@ def is_administrator():
 def run_as_administrator(cmd: list):
     if not is_administrator():
         cmd_exec = cmd[0]
-        params = shlex.join(cmd[1:])
+        params = ' '.join(shlex.quote(arg) for arg in cmd[1:])
 
         info = ShellExecuteEx(
             fMask=shellcon.SEE_MASK_NOCLOSEPROCESS,

@@ -1,15 +1,25 @@
 import multiprocessing
-import shutil
+import sys
+
+
+class SuperuserProcess(multiprocessing.process.BaseProcess):
+    _start_method = None
+
+    @staticmethod
+    def _Popen(process_obj):
+        if sys.platform != 'win32':
+            from pysuperuser.popen_posix import Popen
+        else:
+            from pysuperuser.popen_win32 import Popen
+        return Popen(process_obj)
+
+    @staticmethod
+    def _after_fork():
+        # process is spawned, nothing to do
+        pass
 
 
 def run_as_superuser(target):
-    as_superuser_exec = shutil.which('python-as-superuser')
-    if as_superuser_exec:
-        ctx = multiprocessing.get_context('spawn')
-        ctx.set_executable(as_superuser_exec)
-        p = ctx.Process(target=target)
-        p.start()
-        p.join()
-        assert p.exitcode == 0
-    else:
-        target()
+    p = SuperuserProcess(target=target)
+    p.start()
+    p.join()

@@ -9,7 +9,4 @@ setup(
     install_requires=[
         "pywin32;os_name=='nt'",
     ],
-    entry_points={
-        'console_scripts': ['python-as-superuser=pysuperuser.runner:main']
-    },
 )

@@ -2,9 +2,12 @@ import _winapi
 import ctypes
 import msvcrt
 import os
+import signal
 from multiprocessing import popen_spawn_win32
 
 import win32con
+import win32event
+import win32process
 from win32com.shell import shellcon
 from win32com.shell.shell import ShellExecuteEx
 
@@ -84,3 +87,24 @@ class Popen(popen_spawn_win32.Popen):
             _winapi.CloseHandle(ht)
             self.pid = pid
             self._handle = hp
+
+    def wait(self, timeout=None):
+        if self.is_administrator():
+            return super(Popen, self).wait(timeout)
+        if self.returncode is None:
+            if timeout is None:
+                msecs = win32event.INFINITE
+            else:
+                msecs = max(0, int(timeout * 1000 + 0.5))
+
+            res = win32event.WaitForSingleObject(
+                self._handle,
+                msecs,
+            )
+            if res == win32event.WAIT_OBJECT_0:
+                code = win32process.GetExitCodeProcess(self._handle)
+                if code == win32event.TERMINATE:
+                    code = -signal.SIGTERM
+                self.returncode = code
+
+        return self.returncode

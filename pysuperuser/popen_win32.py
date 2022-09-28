@@ -50,7 +50,7 @@ class Popen(popen_spawn_win32.Popen):
             self.finalizer = util.Finalize(
                 self,
                 popen_spawn_win32._close_handles,
-                (self.sentinel, int(rhandle)),
+                (self.sentinel,),
             )
 
             # send information to child

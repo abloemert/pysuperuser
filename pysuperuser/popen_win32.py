@@ -103,7 +103,7 @@ class Popen(popen_spawn_win32.Popen):
             )
             if res == win32event.WAIT_OBJECT_0:
                 code = win32process.GetExitCodeProcess(self._handle)
-                if code == win32event.TERMINATE:
+                if code == popen_spawn_win32.TERMINATE:
                     code = -signal.SIGTERM
                 self.returncode = code
 
